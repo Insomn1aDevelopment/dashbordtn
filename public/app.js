@@ -8,7 +8,7 @@ const HIGH = ['Международный', 'Республиканский'];
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const url = p => '/' + encodeURI(p);
+const url = p => encodeURI(p); // относительный путь — работает и локально, и на GitHub Pages
 const place = r => PLACES[r.result] ? +r.result : 0;
 const resLabel = r => PLACES[r.result] || r.result;
 const plural = (n, a, b, c) => `${n} ${n % 10 === 1 && n % 100 !== 11 ? a : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? b : c}`;
@@ -565,7 +565,7 @@ document.addEventListener('click', async e => {
   }
   if (d.sort) { state.table = { key: d.sort, dir: state.table.key === d.sort ? -state.table.dir : -1 }; return renderTable(); }
   if (d.del && confirm('Удалить это достижение?')) {
-    const res = await fetch('/api/achievements/' + d.del, { method: 'DELETE', headers: { 'X-Token': state.token } });
+    const res = await fetch('api/achievements/' + d.del, { method: 'DELETE', headers: { 'X-Token': state.token } });
     if (res.ok) { $('#detail').close(); load(); } else alert((await res.json()).error);
   }
 });
@@ -603,7 +603,7 @@ form.addEventListener('submit', async e => {
     const body = Object.fromEntries(['year', 'kind', 'level', 'area', 'result', 'title', 'nomination', 'work'].map(k => [k, f.get(k)]));
     body.students = f.get('students').split(',').map(s => s.trim()).filter(Boolean);
     body.images = await Promise.all([...form.photos.files].map(shrink));
-    const res = await fetch('/api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Token': f.get('token') }, body: JSON.stringify(body) });
+    const res = await fetch('api/achievements', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Token': f.get('token') }, body: JSON.stringify(body) });
     const out = await res.json();
     if (!res.ok) throw new Error(out.error);
     state.token = f.get('token'); store.set('token', state.token);
@@ -619,7 +619,10 @@ form.addEventListener('submit', async e => {
 
 async function load() {
   try {
-    state.items = await (await fetch('/api/achievements')).json();
+    const r = await fetch('api/achievements');
+    // GitHub Pages — статика без API: читаем JSON напрямую, редактирование скрываем
+    if (!r.ok) $('#addBtn').hidden = true;
+    state.items = await (r.ok ? r : await fetch('data/achievements.json')).json();
   } catch {
     $('#view').innerHTML = '<p class="empty">Не удалось загрузить данные — запущен ли сервер?</p>';
     return;
