@@ -10,9 +10,9 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 
 const ROOT = __dirname;
-const PUBLIC = path.join(ROOT, 'public');
-const MEDIA = path.join(ROOT, 'media');
-const DATA = path.join(ROOT, 'data', 'achievements.json');
+const PUBLIC = path.join(ROOT, 'docs'); // docs/ — её же раздаёт GitHub Pages
+const MEDIA = path.join(PUBLIC, 'media');
+const DATA = path.join(PUBLIC, 'data', 'achievements.json');
 const UPLOADS = path.join(MEDIA, 'Заслуги', 'uploads');
 const TOKEN = process.env.ADMIN_TOKEN || '';
 const MAX_BODY = 30 * 1024 * 1024;
@@ -79,9 +79,8 @@ function readBody(req) {
 function serveStatic(req, res, urlPath) {
   let p;
   try { p = decodeURIComponent(urlPath); } catch { return json(res, 400, { error: 'Плохой адрес' }); }
-  const base = p.startsWith('/media/') ? ROOT : PUBLIC;
-  let file = path.resolve(base, '.' + (p === '/' ? '/index.html' : p));
-  if (!file.startsWith(base + path.sep)) return json(res, 404, { error: 'Не найдено' });
+  let file = path.resolve(PUBLIC, '.' + (p === '/' ? '/index.html' : p));
+  if (!file.startsWith(PUBLIC + path.sep)) return json(res, 404, { error: 'Не найдено' });
   fs.stat(file, (err, st) => {
     if (!err && st.isDirectory()) file = path.join(file, 'index.html');
     if (err && err.code !== 'ENOENT') return json(res, 500, { error: 'Ошибка чтения' });
