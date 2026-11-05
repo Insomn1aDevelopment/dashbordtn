@@ -92,7 +92,7 @@ document.addEventListener('mouseout', e => { if (e.target.closest('[data-tip]'))
 document.addEventListener('mousemove', e => { tip.style.left = Math.min(e.clientX + 12, innerWidth - 250) + 'px'; tip.style.top = e.clientY + 14 + 'px'; });
 
 // шапка педагога — всегда за все годы, это портрет, а не срез
-const HERO_PHOTO = 'media/Заслуги/Премии_Героя_Беларуси_Митрополита_Филарета/photo_2026-10-28_13-39-48.jpg';
+const HERO_PHOTO = 'media/teacher/main.jpg';
 function hero() {
   const all = state.items, years = allYears();
   const own = all.filter(i => i.kind === 'педагог');
@@ -110,10 +110,9 @@ function hero() {
       </div>
       <div class="hero-act"><a class="btn primary" href="#/teacher">О педагоге</a><a class="btn" href="#/timeline">Все достижения</a></div>
     </div>
-    <button class="hero-photo" style="--pos:50% 78%" data-open="20" aria-label="Открыть: Премия имени Митрополита Филарета">
-      <img src="${esc(url(HERO_PHOTO))}" alt="Т.Н. Назарчук на вручении Премии имени Митрополита Филарета">
-      <span>Вручение диплома II степени · Премия имени Героя Беларуси Митрополита Филарета</span>
-    </button>
+    <div class="hero-photo" style="--pos:50% 35%">
+      <img src="${esc(url(HERO_PHOTO))}" alt="Т.Н. Назарчук на фоне дипломов и грамот воспитанников">
+    </div>
   </section>`;
 }
 
@@ -443,10 +442,9 @@ PAGES.teacher = {
           <div><b data-count="${count(state.items, i => i.kind === 'педагог')}">0</b><small>личных наград</small></div>
         </div>
       </div>
-      <button class="hero-photo" style="--pos:50% 40%" data-open="9" aria-label="Открыть: Марафон успешных практик">
-        <img src="${esc(url('media/Заслуги/Марафон успешных практик специалистов в сфере организации работы с молодежью/Screenshot_2.png'))}" alt="Т.Н. Назарчук с воспитанницей и сертификатом «Марафона успешных практик»">
-        <span>Сертификат финала «Марафона успешных практик специалистов в сфере организации работы с молодёжью»</span>
-      </button>
+      <div class="hero-photo portrait">
+        <img src="${esc(url('media/teacher/portrait.jpg'))}" alt="Назарчук Татьяна Николаевна">
+      </div>
     </section>
     <section class="card reveal"><header><h2>Личные награды педагога</h2><small>${plural(own.length, 'награда', 'награды', 'наград')}</small></header>
       ${own.length ? `<div class="own">${own.map((i, k) => `<button class="reveal" data-i="${k}" data-open="${i.id}">${i.photos[0] ? `<span class="own-ph" style="background-image:url('${esc(url(i.photos[0]))}')"></span>` : ''}<b>${esc(resLabel(i))}</b><span>${esc(i.title)}</span><small>${esc(i.year)} · ${esc(i.level)}</small></button>`).join('')}</div>` : '<p class="empty">Нет личных наград за выбранный год</p>'}
