@@ -312,7 +312,7 @@ dialog[open] { animation: dlg .3s var(--ease); }
   .cell { opacity: 1; transform: none; }
   .spark path { stroke-dashoffset: 0; } .spark circle { opacity: 1; } .spark .area { opacity: .14; }
 }
-.hero:has(.portrait) { grid-template-columns: minmax(0, 1fr) auto; }
-.hero-photo.portrait { width: 300px; aspect-ratio: 1122 / 1600; min-height: 0; }
+.hero:has(.portrait) { grid-template-columns: auto minmax(0, 1fr); }
+.hero-photo.portrait { width: 260px; aspect-ratio: 1122 / 1600; min-height: 0; order: -1; }
 @media (max-width: 760px) { .hero:has(.portrait) { grid-template-columns: minmax(0, 1fr); } .hero-photo.portrait { width: min(260px, 100%); justify-self: center; margin-top: 16px; border-radius: 12px; } }
 .hero-photo.portrait:hover img { transform: none; }
